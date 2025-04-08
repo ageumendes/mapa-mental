@@ -32,7 +32,7 @@
   z-index: 100;
   display: flex;
   gap: 10px;
-  color: #555;
+  color: #000;
 }
 
 .controls button,
@@ -43,12 +43,21 @@
   background-color: #f0f0f0;
   border: 1px solid #ccc;
   border-radius: 5px;
-  color: #555;
+  transition: background-color 0.2s;
 }
 
 .controls .import-button {
   display: inline-block;
   text-align: center;
+}
+
+/* Estilos para o botão de cadeado */
+.controls .locked {
+  background-color: #ffcccc; /* Vermelho claro quando trancado */
+}
+
+.controls .unlocked {
+  background-color: #ccffcc; /* Verde claro quando destrancado */
 }
 
 .color-palette {
@@ -67,7 +76,6 @@
   border-radius: 50%;
   cursor: pointer;
   transition: transform 0.2s;
-  color: #555;
 }
 
 .color-button:hover {

@@ -65,9 +65,19 @@ function App() {
   const [edges, setEdges] = useState(initialEdges);
   const [selectedNodes, setSelectedNodes] = useState([]);
   const [activeNode, setActiveNode] = useState(null);
+  const [isLocked, setIsLocked] = useState(false); // Estado do cadeado
+
+  // Função para alternar o estado do cadeado
+  const toggleLock = useCallback(() => {
+    setIsLocked((prev) => !prev);
+  }, []);
 
   // Função para adicionar um novo nó
   const onAddNode = useCallback(() => {
+    if (isLocked) {
+      alert('O mapa está trancado. Desbloqueie para adicionar novos nós.');
+      return;
+    }
     let newPosition;
     if (selectedNodes.length > 0) {
       const selectedNode = nodes.find((n) => n.id === selectedNodes[0]);
@@ -87,28 +97,39 @@ function App() {
       draggable: true,
     };
     setNodes((nds) => nds.concat(newNode));
-  }, [nodes, selectedNodes]);
+  }, [nodes, selectedNodes, isLocked]);
 
   // Função para conectar nós
   const onConnect = useCallback(
     (params) => {
+      if (isLocked) {
+        alert('O mapa está trancado. Desbloqueie para conectar nós.');
+        return;
+      }
       const newEdge = { ...params, animated: true };
       setEdges((eds) => addEdge(newEdge, eds));
     },
-    []
+    [isLocked]
   );
 
   // Função para editar o rótulo do nó com duplo clique
-  const onNodeDoubleClick = useCallback((event, node) => {
-    const newLabel = prompt('Digite o novo texto:', node.data.label);
-    if (newLabel) {
-      setNodes((nds) =>
-        nds.map((n) =>
-          n.id === node.id ? { ...n, data: { ...n.data, label: newLabel } } : n
-        )
-      );
-    }
-  }, []);
+  const onNodeDoubleClick = useCallback(
+    (event, node) => {
+      if (isLocked) {
+        alert('O mapa está trancado. Desbloqueie para editar rótulos.');
+        return;
+      }
+      const newLabel = prompt('Digite o novo texto:', node.data.label);
+      if (newLabel) {
+        setNodes((nds) =>
+          nds.map((n) =>
+            n.id === node.id ? { ...n, data: { ...n.data, label: newLabel } } : n
+          )
+        );
+      }
+    },
+    [isLocked]
+  );
 
   // Função para detectar clique simples no nó
   const onNodeClick = useCallback((event, node) => {
@@ -127,6 +148,10 @@ function App() {
   // Função para aplicar cor ao nó ativo
   const applyColor = useCallback(
     (color) => {
+      if (isLocked) {
+        alert('O mapa está trancado. Desbloqueie para mudar cores.');
+        return;
+      }
       if (activeNode) {
         setNodes((nds) =>
           nds.map((n) =>
@@ -135,32 +160,43 @@ function App() {
         );
       }
     },
-    [activeNode]
+    [activeNode, isLocked]
   );
 
   // Sincroniza o estado selected dos nós com selectedNodes
   const syncedNodes = nodes.map((node) => ({
     ...node,
     selected: selectedNodes.includes(node.id),
+    draggable: !isLocked, // Desativa o arrastar quando trancado
   }));
 
   // Função para atualizar a posição dos nós ao arrastar
   const onNodesChange = useCallback(
     (changes) => {
+      if (isLocked) {
+        return; // Impede mudanças de posição
+      }
       setNodes((nds) => applyNodeChanges(changes, nds));
     },
-    []
+    [isLocked]
   );
 
   // Função para excluir uma borda ao clicar nela
-  const onEdgeClick = useCallback((event, edge) => {
-    const confirmDelete = window.confirm(
-      `Deseja excluir a conexão entre ${edge.source} e ${edge.target}?`
-    );
-    if (confirmDelete) {
-      setEdges((eds) => eds.filter((e) => e.id !== edge.id));
-    }
-  }, []);
+  const onEdgeClick = useCallback(
+    (event, edge) => {
+      if (isLocked) {
+        alert('O mapa está trancado. Desbloqueie para excluir bordas.');
+        return;
+      }
+      const confirmDelete = window.confirm(
+        `Deseja excluir a conexão entre ${edge.source} e ${edge.target}?`
+      );
+      if (confirmDelete) {
+        setEdges((eds) => eds.filter((e) => e.id !== edge.id));
+      }
+    },
+    [isLocked]
+  );
 
   // Função para salvar o mapa no localStorage e sessionStorage
   const saveMap = useCallback(() => {
@@ -280,6 +316,9 @@ function App() {
             style={{ display: 'none' }}
           />
         </label>
+        <button onClick={toggleLock} className={isLocked ? 'locked' : 'unlocked'}>
+          {isLocked ? '🔒 Desbloquear' : '🔓 Bloquear'}
+        </button>
       </div>
 
       <div className="color-palette">
