@@ -1,17 +1,15 @@
 {
-  "homepage": "https://ageumendes.github.io/mapa-mental",
   "name": "mapa-mental",
-  "private": true,
   "version": "0.1.0",
-  "type": "module",
+  "homepage": "https://ageumendes.github.io/mapa-mental",
+  "private": true,
   "scripts": {
-  "start": "react-scripts start",
-  "build": "react-scripts build",
-  "test": "react-scripts test",
-  "eject": "react-scripts eject",
-  "predeploy": "npm run build",
-  "deploy": "gh-pages -d build"
-},
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
