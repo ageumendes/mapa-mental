@@ -14,7 +14,7 @@ import './App.css';
 const CustomNode = ({ data, selected }) => (
   <div
     className={`custom-node ${selected ? 'selected' : ''}`}
-    style={{ backgroundColor: data.color || '#f0f0f0' }} // Aplica a cor do nó
+    style={{ backgroundColor: data.color || '#f0f0f0' }}
   >
     <Handle type="target" position="top" />
     <div>{data.label}</div>
@@ -52,19 +52,19 @@ const initialEdges = [
 
 // Paleta de cores
 const colorPalette = [
-  '#ff9999', // Vermelho claro
-  '#99ff99', // Verde claro
-  '#9999ff', // Azul claro
-  '#ffff99', // Amarelo claro
-  '#ff99ff', // Rosa claro
-  '#f0f0f0', // Cinza padrão (reset)
+  '#ff9999',
+  '#99ff99',
+  '#9999ff',
+  '#ffff99',
+  '#ff99ff',
+  '#f0f0f0',
 ];
 
 function App() {
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
   const [selectedNodes, setSelectedNodes] = useState([]);
-  const [activeNode, setActiveNode] = useState(null); // Nó atualmente ativo para colorir
+  const [activeNode, setActiveNode] = useState(null);
 
   // Função para adicionar um novo nó
   const onAddNode = useCallback(() => {
@@ -120,7 +120,7 @@ function App() {
       );
     } else {
       setSelectedNodes([node.id]);
-      setActiveNode(node.id); // Define o nó ativo para colorir
+      setActiveNode(node.id);
     }
   }, []);
 
@@ -206,6 +206,38 @@ function App() {
     }
   }, []);
 
+  // Função para exportar o mapa como arquivo JSON
+  const exportMap = useCallback(() => {
+    const mapData = JSON.stringify({ nodes: syncedNodes, edges });
+    const blob = new Blob([mapData], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'mapa-mental.json';
+    link.click();
+    URL.revokeObjectURL(url);
+  }, [syncedNodes, edges]);
+
+  // Função para importar o mapa de um arquivo JSON
+  const importMap = useCallback((event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const { nodes: importedNodes, edges: importedEdges } = JSON.parse(e.target.result);
+          setNodes(importedNodes);
+          setEdges(importedEdges);
+          setSelectedNodes(importedNodes.filter((n) => n.selected).map((n) => n.id));
+          alert('Mapa importado com sucesso!');
+        } catch (error) {
+          alert('Erro ao importar o mapa: arquivo inválido.');
+        }
+      };
+      reader.readAsText(file);
+    }
+  }, []);
+
   // Função para limpar o mapa
   const clearMap = useCallback(() => {
     setNodes(initialNodes);
@@ -237,9 +269,19 @@ function App() {
         <button onClick={saveMap}>Salvar Mapa</button>
         <button onClick={loadMap}>Carregar Mapa</button>
         <button onClick={clearMap}>Limpar Tudo</button>
+        <button onClick={exportMap}>Exportar Mapa</button>
+        <label htmlFor="import-map" className="import-button">
+          Importar Mapa
+          <input
+            id="import-map"
+            type="file"
+            accept=".json"
+            onChange={importMap}
+            style={{ display: 'none' }}
+          />
+        </label>
       </div>
 
-      {/* Paleta de cores */}
       <div className="color-palette">
         {colorPalette.map((color) => (
           <button

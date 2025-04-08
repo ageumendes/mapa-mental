@@ -11,7 +11,7 @@
   min-width: 100px;
   text-align: center;
   transition: opacity 0.2s;
-  color: black;
+  color: #555;
 }
 
 .custom-node.selected {
@@ -32,15 +32,25 @@
   z-index: 100;
   display: flex;
   gap: 10px;
+  color: #555;
 }
 
-.controls button {
+.controls button,
+.controls .import-button {
   padding: 10px;
   font-size: 16px;
   cursor: pointer;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  color: #555;
 }
 
-/* Estilos para a paleta de cores */
+.controls .import-button {
+  display: inline-block;
+  text-align: center;
+}
+
 .color-palette {
   position: absolute;
   bottom: 10px;
@@ -57,6 +67,7 @@
   border-radius: 50%;
   cursor: pointer;
   transition: transform 0.2s;
+  color: #555;
 }
 
 .color-button:hover {
