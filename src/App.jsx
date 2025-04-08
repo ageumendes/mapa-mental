@@ -98,7 +98,8 @@ function App() {
   const onConnect = useCallback(
     (params) => {
       if (isLocked) {
-        return; // Já bloqueado pelo interactive, mas mantemos a consistência
+        alert('O mapa está trancado. Desbloqueie para conectar nós.');
+        return;
       }
       const newEdge = { ...params, animated: true };
       setEdges((eds) => addEdge(newEdge, eds));
@@ -161,13 +162,14 @@ function App() {
   const syncedNodes = nodes.map((node) => ({
     ...node,
     selected: selectedNodes.includes(node.id),
+    draggable: !isLocked, // Garante que draggable seja false quando trancado
   }));
 
   // Função para atualizar a posição dos nós ao arrastar
   const onNodesChange = useCallback(
     (changes) => {
       if (isLocked) {
-        return; // Já bloqueado pelo interactive, mas mantemos a consistência
+        return; // Impede arrastar
       }
       setNodes((nds) => applyNodeChanges(changes, nds));
     },
@@ -275,6 +277,11 @@ function App() {
     setActiveNode(null);
   }, []);
 
+  // Função para sincronizar o estado do cadeado com o botão nativo
+  const handleInteractiveChange = useCallback((interactive) => {
+    setIsLocked(!interactive); // Quando interactive é false, isLocked é true
+  }, []);
+
   return (
     <div className="app-container">
       <ReactFlow
@@ -287,10 +294,10 @@ function App() {
         onEdgeClick={onEdgeClick}
         nodeTypes={nodeTypes}
         fitView
-        interactive={!isLocked} // Liga/desliga interatividade com o cadeado
+        interactive={!isLocked} // Controla arrastar e conectar
       >
         <Background />
-        <Controls onInteractiveChange={setIsLocked} /> {/* Atualiza o estado ao clicar no cadeado */}
+        <Controls onInteractiveChange={handleInteractiveChange} /> {/* Sincroniza com o cadeado */}
         <MiniMap />
       </ReactFlow>
 
