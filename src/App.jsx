@@ -67,11 +67,6 @@ function App() {
   const [activeNode, setActiveNode] = useState(null);
   const [isLocked, setIsLocked] = useState(false); // Estado do cadeado
 
-  // Função para alternar o estado do cadeado
-  const toggleLock = useCallback(() => {
-    setIsLocked((prev) => !prev);
-  }, []);
-
   // Função para adicionar um novo nó
   const onAddNode = useCallback(() => {
     if (isLocked) {
@@ -103,8 +98,7 @@ function App() {
   const onConnect = useCallback(
     (params) => {
       if (isLocked) {
-        alert('O mapa está trancado. Desbloqueie para conectar nós.');
-        return;
+        return; // Já bloqueado pelo interactive, mas mantemos a consistência
       }
       const newEdge = { ...params, animated: true };
       setEdges((eds) => addEdge(newEdge, eds));
@@ -167,14 +161,13 @@ function App() {
   const syncedNodes = nodes.map((node) => ({
     ...node,
     selected: selectedNodes.includes(node.id),
-    draggable: !isLocked, // Desativa o arrastar quando trancado
   }));
 
   // Função para atualizar a posição dos nós ao arrastar
   const onNodesChange = useCallback(
     (changes) => {
       if (isLocked) {
-        return; // Impede mudanças de posição
+        return; // Já bloqueado pelo interactive, mas mantemos a consistência
       }
       setNodes((nds) => applyNodeChanges(changes, nds));
     },
@@ -294,9 +287,10 @@ function App() {
         onEdgeClick={onEdgeClick}
         nodeTypes={nodeTypes}
         fitView
+        interactive={!isLocked} // Liga/desliga interatividade com o cadeado
       >
         <Background />
-        <Controls />
+        <Controls onInteractiveChange={setIsLocked} /> {/* Atualiza o estado ao clicar no cadeado */}
         <MiniMap />
       </ReactFlow>
 
@@ -316,9 +310,6 @@ function App() {
             style={{ display: 'none' }}
           />
         </label>
-        <button onClick={toggleLock} className={isLocked ? 'locked' : 'unlocked'}>
-          {isLocked ? '🔒 Desbloquear' : '🔓 Bloquear'}
-        </button>
       </div>
 
       <div className="color-palette">
