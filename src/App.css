@@ -1,17 +1,253 @@
+#root {
+  --background: #ffffff;
+  --text-color: #000000;
+  --button-bg: #f0f0f0;
+  --button-border: #ccc;
+  --button-text: #000;
+}
+
+.dark-theme {
+  --background: #1a1a1a;
+  --text-color: #ffffff;
+  --button-bg: #333;
+  --button-border: #555;
+  --button-text: #fff;
+}
+
+.light-theme {
+  --background: #ffffff;
+  --text-color: #000000;
+  --button-bg: #f0f0f0;
+  --button-border: #ccc;
+  --button-text: #000;
+}
+
 .app-container {
   height: 100vh;
   width: 100vw;
   position: relative;
+  background-color: var(--background);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+.light-theme .react-flow__node {
+  background: #f0f0f0;
+  color: #000;
+  border: 1px solid #333;
+}
+
+.dark-theme .react-flow__node {
+  background: #333;
+  color: #fff;
+  border: 1px solid #ccc;
+}
+
+.react-flow__edge-path {
+  stroke: var(--text-color);
+}
+
+.controls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 100;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.controls button,
+.controls .import-button,
+.controls input,
+.controls select {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: var(--button-bg);
+  border: 1px solid var(--button-border);
+  border-radius: 5px;
+  transition: background-color 0.2s;
+  color: var(--button-text);
+}
+
+.controls .import-button {
+  display: inline-block;
+  text-align: center;
+}
+
+.controls .locked {
+  background-color: #ffcccc;
+}
+
+.controls .unlocked {
+  background-color: #ccffcc;
+}
+
+.controls input,
+.controls select {
+  cursor: text;
+}
+
+.controls input:disabled,
+.controls select:disabled,
+.controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.map-name-input {
+  max-width: 150px;
+}
+
+.map-selector {
+  max-width: 200px;
+}
+
+.error-message {
+  color: #ff4444;
+  font-size: 14px;
+  padding: 5px;
+  background-color: var(--background);
+  border: 1px solid #ff4444;
+  border-radius: 5px;
+}
+
+.color-palette {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.palette-selector {
+  display: flex;
+  gap: 5px;
+}
+
+.palette-selector select,
+.palette-selector button {
+  padding: 8px;
+  font-size: 14px;
+  background-color: var(--button-bg);
+  border: 1px solid var(--button-border);
+  border-radius: 5px;
+  color: var(--button-text);
+  cursor: pointer;
+}
+
+.palette-selector select:disabled,
+.palette-selector button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.add-palette-form {
+  background-color: var(--button-bg);
+  border: 1px solid var(--button-border);
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+}
+
+.add-palette-form input {
+  padding: 8px;
+  border: 1px solid var(--button-border);
+  border-radius: 5px;
+  background-color: var(--background);
+  color: var(--text-color);
+}
+
+.add-palette-form button {
+  padding: 8px;
+  cursor: pointer;
+  background-color: var(--button-bg);
+  border: 1px solid var(--button-border);
+  border-radius: 5px;
+  color: var(--button-text);
+}
+
+.add-palette-form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.color-picker-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.selected-colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.color-swatch {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--button-border);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.color-swatch:hover {
+  transform: scale(1.1);
+}
+
+.chrome-picker {
+  background-color: var(--button-bg) !important;
+  border: 1px solid var(--button-border) !important;
+  border-radius: 5px !important;
+}
+
+.chrome-picker input {
+  background-color: var(--background) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--button-border) !important;
+}
+
+.color-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.color-button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--button-border);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.color-button:hover {
+  transform: scale(1.2);
+}
+
+.color-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .custom-node {
   padding: 10px;
   border-radius: 5px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--button-border);
   min-width: 100px;
   text-align: center;
   transition: opacity 0.2s;
-  color: #555;
+  color: var(--text-color);
 }
 
 .custom-node.selected {
@@ -21,63 +257,6 @@
 .react-flow__handle {
   width: 8px;
   height: 8px;
-  background: #555;
-  border: 1px solid #fff;
-}
-
-.controls {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 100;
-  display: flex;
-  gap: 10px;
-  color: #000;
-}
-
-.controls button,
-.controls .import-button {
-  padding: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  transition: background-color 0.2s;
-}
-
-.controls .import-button {
-  display: inline-block;
-  text-align: center;
-}
-
-/* Estilos para o botão de cadeado */
-.controls .locked {
-  background-color: #ffcccc; /* Vermelho claro quando trancado */
-}
-
-.controls .unlocked {
-  background-color: #ccffcc; /* Verde claro quando destrancado */
-}
-
-.color-palette {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  z-index: 100;
-  display: flex;
-  gap: 5px;
-}
-
-.color-button {
-  width: 30px;
-  height: 30px;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.color-button:hover {
-  transform: scale(1.2);
+  background: var(--text-color);
+  border: 1px solid var(--background);
 }
